@@ -1,17 +1,29 @@
 package com.apibanco.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Conta <b>Corrente</b> &mdash; subclasse concreta de {@link Conta}.
  *
  * <p>Regras de negócio:</p>
  * <ul>
- *   <li><b>Tarifa de saque:</b> valor <b>fixo</b> de {@code R$ 2,50}
- *       por saque, independentemente do valor movimentado;</li>
+ *   <li><b>Tarifa de saque:</b> <b>1% do valor sacado</b> (configurável
+ *       via {@code banco.taxas.saque-corrente} em {@code application.yml}
+ *       &mdash; o percentual é passado por parâmetro para a entidade, que
+ *       permanece pura e sem dependência do Spring);</li>
  *   <li><b>Rendimento:</b> <b>não há</b> &mdash; {@link #aplicarRendimento()}
  *       é no-op (conta corrente não rende juros).</li>
  * </ul>
+ *
+ * <p><b>Sobre o percentual configurável:</b> a entidade recebe o percentual
+ * como parâmetro em {@link #calcularTaxaSaque(BigDecimal, BigDecimal)}.
+ * A camada de serviço é quem lê {@code banco.taxas.saque-corrente} via
+ * {@code @Value} e repassa. Isso mantém a entidade JPA testável sem Spring
+ * e sem depender de {@code Environment}.</p>
+ *
+ * <p><b>Arredondamento:</b> {@link RoundingMode#HALF_EVEN} &mdash; convenção
+ * bancária (Banker's Rounding).</p>
  *
  * <p>Persistida na tabela única {@code conta} com discriminador
  * {@link TipoConta#CORRENTE} (herança SINGLE_TABLE).</p>
@@ -24,9 +36,14 @@ import java.math.BigDecimal;
 public class ContaCorrente extends Conta {
 
     /**
-     * Tarifa fixa aplicada a cada saque, em reais.
+     * Percentual <b>padrão</b> de tarifa de saque (1%) &mdash; usado quando
+     * a camada de serviço não informa um valor configurado.
+     *
+     * <p>Serve como fallback seguro e como referência legível. O valor
+     * efetivo vem de {@code banco.taxas.saque-corrente} no
+     * {@code application.yml}.</p>
      */
-    private static final BigDecimal TARIFA_SAQUE_FIXA = new BigDecimal("2.50");
+    public static final BigDecimal PERCENTUAL_TARIFA_SAQUE_PADRAO = new BigDecimal("0.01");
 
     /**
      * Construtor vazio exigido pelo JPA.
@@ -46,14 +63,43 @@ public class ContaCorrente extends Conta {
     }
 
     /**
-     * Calcula a tarifa de saque &mdash; valor <b>fixo</b> para conta corrente.
+     * Calcula a tarifa de saque aplicando o percentual <b>padrão</b>
+     * ({@value #PERCENTUAL_TARIFA_SAQUE_PADRAO}, ou seja, 1%).
      *
-     * @param valor valor do saque (não afeta o cálculo nesta subclasse)
-     * @return a tarifa fixa de {@code R$ 2,50}
+     * <p>Atalho para {@link #calcularTaxaSaque(BigDecimal, BigDecimal)} com
+     * o percentual padrão. Útil em testes e em contextos onde não há
+     * configuração injetada.</p>
+     *
+     * @param valor valor do saque; deve ser positivo
+     * @return a tarifa calculada (1% do valor, arredondada HALF_EVEN)
      */
     @Override
     public BigDecimal calcularTaxaSaque(BigDecimal valor) {
-        return TARIFA_SAQUE_FIXA;
+        return calcularTaxaSaque(valor, PERCENTUAL_TARIFA_SAQUE_PADRAO);
+    }
+
+    /**
+     * Calcula a tarifa de saque aplicando o percentual <b>informado</b>.
+     *
+     * <p>O percentual vem da configuração ({@code banco.taxas.saque-corrente})
+     * e é repassado pela camada de serviço &mdash; a entidade não conhece
+     * Spring nem {@code Environment}.</p>
+     *
+     * @param valor      valor do saque; deve ser positivo
+     * @param percentual percentual da tarifa (ex.: {@code 0.01} para 1%);
+     *                   deve ser ≥ 0 e &lt; 1
+     * @return a tarifa calculada ({@code valor * percentual}, arredondada HALF_EVEN)
+     * @throws IllegalArgumentException se {@code valor} ou {@code percentual}
+     *         estiverem fora dos limites
+     */
+    public BigDecimal calcularTaxaSaque(BigDecimal valor, BigDecimal percentual) {
+        if (valor == null || valor.signum() <= 0) {
+            throw new IllegalArgumentException("valor do saque deve ser positivo");
+        }
+        if (percentual == null || percentual.signum() < 0 || percentual.compareTo(BigDecimal.ONE) >= 0) {
+            throw new IllegalArgumentException("percentual da tarifa deve estar em [0, 1)");
+        }
+        return valor.multiply(percentual).setScale(2, RoundingMode.HALF_EVEN);
     }
 
     /**
