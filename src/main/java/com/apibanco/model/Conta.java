@@ -271,37 +271,65 @@ public abstract class Conta {
 
     // Getters
 
-    /** @return o id gerado pelo banco, ou {@code null} antes de persistir */
+    /**
+     * Retorna o identificador técnico da conta.
+     *
+     * @return o id gerado pelo banco, ou {@code null} antes de persistir
+     */
     public Long getId() {
         return id;
     }
 
-    /** @return o número da conta (único, imutável após persistência) */
+    /**
+     * Retorna o número único da conta.
+     *
+     * @return o número da conta (único, imutável após persistência)
+     */
     public String getNumero() {
         return numero;
     }
 
-    /** @return o saldo atual (nunca {@code null}; nunca negativo) */
+    /**
+     * Retorna o saldo atual.
+     *
+     * @return o saldo atual (nunca {@code null}; nunca negativo)
+     */
     public BigDecimal getSaldo() {
         return saldo;
     }
 
-    /** @return o tipo da conta, coerente com a subclasse concreta */
+    /**
+     * Retorna o tipo da conta, coerente com a subclasse concreta.
+     *
+     * @return o tipo da conta
+     */
     public TipoConta getTipo() {
         return tipo;
     }
 
-    /** @return o cliente dono da conta */
+    /**
+     * Retorna o cliente dono da conta.
+     *
+     * @return o cliente dono da conta
+     */
     public Cliente getCliente() {
         return cliente;
     }
 
-    /** @return a lista (lazy) de transações em que esta conta é a origem */
+    /**
+     * Retorna a lista (lazy) de transações em que esta conta é a origem.
+     *
+     * @return a lista de transações
+     */
     public List<Transacao> getTransacoesComoOrigem() {
         return transacoesComoOrigem;
     }
 
-    /** @return a lista (lazy) de transações em que esta conta é o destino */
+    /**
+     * Retorna a lista (lazy) de transações em que esta conta é o destino.
+     *
+     * @return a lista de transações
+     */
     public List<Transacao> getTransacoesComoDestino() {
         return transacoesComoDestino;
     }
