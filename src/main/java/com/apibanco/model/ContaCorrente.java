@@ -42,6 +42,9 @@ public class ContaCorrente extends Conta {
      * <p>Serve como fallback seguro e como referência legível. O valor
      * efetivo vem de {@code banco.taxas.saque-corrente} no
      * {@code application.yml}.</p>
+     *
+     * <p><b>Nota:</b> é {@code BigDecimal}, então <b>não</b> pode ser usado
+     * com <code>&#123;@value&#125;</code> (que só aceita primitivos/String).</p>
      */
     public static final BigDecimal PERCENTUAL_TARIFA_SAQUE_PADRAO = new BigDecimal("0.01");
 
@@ -64,7 +67,7 @@ public class ContaCorrente extends Conta {
 
     /**
      * Calcula a tarifa de saque aplicando o percentual <b>padrão</b>
-     * ({@value #PERCENTUAL_TARIFA_SAQUE_PADRAO}, ou seja, 1%).
+     * ({@link #PERCENTUAL_TARIFA_SAQUE_PADRAO}, ou seja, 1%).
      *
      * <p>Atalho para {@link #calcularTaxaSaque(BigDecimal, BigDecimal)} com
      * o percentual padrão. Útil em testes e em contextos onde não há
