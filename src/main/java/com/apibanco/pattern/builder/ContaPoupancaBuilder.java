@@ -26,6 +26,12 @@ import com.apibanco.model.TipoConta;
 public class ContaPoupancaBuilder extends ContaBuilder<ContaPoupancaBuilder> {
 
     /**
+     * Construtor público para que o cliente possa instanciar diretamente.
+     */
+    public ContaPoupancaBuilder() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
