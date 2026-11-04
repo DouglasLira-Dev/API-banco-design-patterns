@@ -48,6 +48,13 @@ import java.math.BigDecimal;
 public class ContaFactory {
 
     /**
+     * Construtor público &mdash; instanciado pelo Spring (via
+     * {@code @Component}) e pelos testes.
+     */
+    public ContaFactory() {
+    }
+
+    /**
      * Cria uma conta a partir do {@link TipoConta} apenas &mdash; sem dados
      * de cliente/número/saldo reais.
      *
