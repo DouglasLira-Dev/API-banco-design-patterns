@@ -73,6 +73,14 @@ public abstract class ContaBuilder<T extends ContaBuilder<T>> {
     protected TipoConta tipo;
 
     /**
+     * Construtor protegido &mdash; subclasses concretas
+     * ({@link ContaCorrenteBuilder}, {@link ContaPoupancaBuilder}) são
+     * as únicas que devem ser instanciadas pelo cliente.
+     */
+    protected ContaBuilder() {
+    }
+
+    /**
      * Retorna {@code this} como o tipo concreto do builder &mdash; truque
      * padrão do self-type.
      *
