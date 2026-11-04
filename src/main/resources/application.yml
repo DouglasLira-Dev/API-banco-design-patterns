@@ -23,9 +23,9 @@ spring:
   h2:
     console:
       enabled: true
-      path: /h2-console   # acessível em http://localhost:8080/h2-console
+      path: /h2-console
       settings:
-        web-allow-others: false  # por segurança, só acessível localmente
+        web-allow-others: false   # por segurança, só acessível localmente
 
   # ---------- JPA / Hibernate ----------
   jpa:
@@ -35,7 +35,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        # Dialeto explícito ajuda a evitar warnings no boot
         dialect: org.hibernate.dialect.H2Dialect
     open-in-view: false
     defer-datasource-initialization: true
@@ -43,6 +42,12 @@ spring:
   # ---------- Banner/logs ----------
   main:
     banner-mode: console
+
+# Regras de negócio parametrizáveis
+banco:
+  taxas:
+    # Percentual de tarifa de saque em conta corrente (0.01 = 1%)
+    saque-corrente: 0.01
 
 # ---------- Servidor HTTP ----------
 server:
