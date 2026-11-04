@@ -1,0 +1,51 @@
+# =========================================================
+# Configuração da aplicação API-banco-design-patterns
+# Banco: H2 em memória (bancodb)
+# Profile: dev/test — em produção trocar por PostgreSQL + Flyway
+# =========================================================
+
+spring:
+  application:
+    name: api-banco-design-patterns
+
+  # ---------- Datasource H2 em memória ----------
+  datasource:
+    url: jdbc:h2:mem:bancodb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+    # Pool pequeno: banco em memória usado só para dev
+    hikari:
+      maximum-pool-size: 10
+      pool-name: api-banco-pool
+
+  # ---------- Console web do H2 ----------
+  h2:
+    console:
+      enabled: true
+      path: /h2-console   # acessível em http://localhost:8080/h2-console
+      settings:
+        web-allow-others: false  # por segurança, só acessível localmente
+
+  # ---------- JPA / Hibernate ----------
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        # Dialeto explícito ajuda a evitar warnings no boot
+        dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+    defer-datasource-initialization: true
+
+  # ---------- Banner/logs ----------
+  main:
+    banner-mode: console
+
+# ---------- Servidor HTTP ----------
+server:
+  port: 8080
+  error:
+    include-message: always   # expõe mensagem de exceções nos erros 4xx/5xx em dev
