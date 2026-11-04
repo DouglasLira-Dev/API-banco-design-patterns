@@ -107,9 +107,9 @@ class ContaPoupancaTest {
         ContaPoupanca conta = novaContaPoupanca();
         conta.creditar(new BigDecimal("1000.00"));
 
-        conta.aplicarRendimento(); // 1000 -> 1005,00
-        conta.aplicarRendimento(); // 1005 -> 1010,03 (5,025 arredonda 5,03)
+        conta.aplicarRendimento(); // 1000,00 -> +0,5% = 5,00 -> saldo 1005,00
+        conta.aplicarRendimento(); // 1005,00 -> +0,5% = 5,025 -> HALF_EVEN -> 5,02 (par) -> saldo 1010,02
 
-        assertThat(conta.getSaldo()).isEqualByComparingTo("1010.03");
+        assertThat(conta.getSaldo()).isEqualByComparingTo("1010.02");
     }
 }
