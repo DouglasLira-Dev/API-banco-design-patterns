@@ -34,6 +34,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class BancoApplication {
+    /**
+     * Construtor privado &mdash; a classe é apenas um entry point e não
+     * deve ser instanciada diretamente.
+     */
+    private BancoApplication() {
+    }
 
     /**
      * Ponto de entrada do processo Java.
