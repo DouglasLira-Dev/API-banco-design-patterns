@@ -163,6 +163,27 @@ public abstract class Conta {
         this.saldo = BigDecimal.ZERO;
     }
 
+    /**
+     * Construtor de negócio usado pelo Builder / Factory quando o número
+     * da conta já é conhecido no momento da criação.
+     *
+     * <p>Não substitui {@link #Conta(Cliente)} &mdash; o Builder escolhe
+     * este quando {@code comNumero(...)} foi chamado. Se o número não
+     * foi informado, o fluxo de criação usa o outro construtor e o
+     * número será atribuído em etapa posterior (Factory).</p>
+     *
+     * @param cliente dono da conta; não pode ser {@code null}
+     * @param numero  número único da conta; não pode ser {@code null} nem vazio
+     */
+    protected Conta(Cliente cliente, String numero) {
+        this(cliente);
+        Objects.requireNonNull(numero, "numero não pode ser nulo");
+        if (numero.isBlank()) {
+            throw new IllegalArgumentException("numero não pode ser vazio");
+        }
+        this.numero = numero;
+    }
+
     // Contrato polimórfico (implementado pelas subclasses concretas)
 
     /**
