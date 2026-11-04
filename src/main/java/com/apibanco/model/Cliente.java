@@ -134,13 +134,17 @@ public class Cliente {
     // Getters
 
     /**
-     * @return o identificador gerado pelo banco, ou {@code null} antes de persistir
+     * Retorna o identificador técnico do cliente.
+     *
+     * @return o id gerado pelo banco, ou {@code null} antes de persistir
      */
     public Long getId() {
         return id;
     }
 
     /**
+     * Retorna o nome completo do cliente.
+     *
      * @return o nome completo do cliente
      */
     public String getNome() {
@@ -148,6 +152,8 @@ public class Cliente {
     }
 
     /**
+     * Retorna o CPF (11 dígitos, sem pontuação).
+     *
      * @return o CPF (11 dígitos, sem pontuação)
      */
     public String getCpf() {
@@ -155,6 +161,8 @@ public class Cliente {
     }
 
     /**
+     * Retorna o e-mail do cliente.
+     *
      * @return o e-mail do cliente
      */
     public String getEmail() {
@@ -162,6 +170,8 @@ public class Cliente {
     }
 
     /**
+     * Retorna a lista de contas do cliente.
+     *
      * @return a lista mutável de contas do cliente (nunca {@code null})
      */
     public List<Conta> getContas() {
