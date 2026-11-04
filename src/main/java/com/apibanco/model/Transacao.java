@@ -204,32 +204,56 @@ public class Transacao {
 
     // Getters (sem setters — transação é imutável após registro)
 
-    /** @return o id gerado pelo banco, ou {@code null} antes de persistir */
+    /**
+     * Retorna o tipo da transação.
+     *
+     * @return o tipo da transação
+     */
     public Long getId() {
         return id;
     }
-
-    /** @return o tipo da transação */
+    
+    /**
+     * Retorna o tipo da transação.
+     *
+     * @return o tipo da transação
+     */
     public TipoTransacao getTipo() {
         return tipo;
     }
 
-    /** @return o valor movimentado (sempre positivo) */
+    /**
+     * Retorna o valor movimentado.
+     *
+     * @return o valor movimentado (sempre positivo)
+     */
     public BigDecimal getValor() {
         return valor;
     }
 
-    /** @return o instante em que a transação foi registrada */
+    /**
+     * Retorna o instante em que a transação foi registrada.
+     *
+     * @return o instante em que a transação foi registrada
+     */
     public LocalDateTime getDataHora() {
         return dataHora;
     }
 
-    /** @return a conta debitada (nula em depósito) */
+    /**
+     * Retorna a conta debitada.
+     *
+     * @return a conta debitada (nula em depósito)
+     */
     public Conta getContaOrigem() {
         return contaOrigem;
     }
 
-    /** @return a conta creditada (nula em saque) */
+    /**
+     * Retorna a conta creditada.
+     *
+     * @return a conta creditada (nula em saque)
+     */
     public Conta getContaDestino() {
         return contaDestino;
     }
