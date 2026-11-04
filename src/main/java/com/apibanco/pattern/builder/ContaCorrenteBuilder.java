@@ -27,6 +27,12 @@ import com.apibanco.model.TipoConta;
 public class ContaCorrenteBuilder extends ContaBuilder<ContaCorrenteBuilder> {
 
     /**
+     * Construtor público para que o cliente possa instanciar diretamente.
+     */
+    public ContaCorrenteBuilder() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
