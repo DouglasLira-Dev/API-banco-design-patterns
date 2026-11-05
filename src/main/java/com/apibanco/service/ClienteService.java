@@ -2,6 +2,7 @@ package com.apibanco.service;
 
 import com.apibanco.dto.ClienteRequest;
 import com.apibanco.exception.BusinessException;
+import com.apibanco.exception.NotFoundException;
 import com.apibanco.model.Cliente;
 import com.apibanco.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
@@ -83,12 +84,12 @@ public class ClienteService {
      *
      * @param id identificador; não pode ser nulo
      * @return o cliente
-     * @throws BusinessException se não existir
+     * @throws NotFoundException se não existir
      */
     @Transactional(readOnly = true)
     public Cliente buscarPorId(Long id) {
         return clienteRepository.findById(id)
-            .orElseThrow(() -> new BusinessException("cliente não encontrado: " + id));
+            .orElseThrow(() -> new NotFoundException("cliente não encontrado: " + id));
     }
 
     /**
@@ -96,13 +97,13 @@ public class ClienteService {
      *
      * @param cpf CPF (11 dígitos, sem pontuação)
      * @return o cliente
-     * @throws BusinessException se não existir
+     * @throws NotFoundException se não existir
      */
     @Transactional(readOnly = true)
     public Cliente buscarPorCpf(String cpf) {
         String normalizado = cpf.replaceAll("\\D", "");
         return clienteRepository.findByCpf(normalizado)
-            .orElseThrow(() -> new BusinessException("cliente não encontrado para o CPF informado"));
+            .orElseThrow(() -> new NotFoundException("cliente não encontrado para o CPF informado"));
     }
 
     /**
