@@ -2,6 +2,7 @@ package com.apibanco.controller;
 
 import com.apibanco.dto.ClienteRequest;
 import com.apibanco.exception.BusinessException;
+import com.apibanco.exception.NotFoundException;
 import com.apibanco.model.Cliente;
 import com.apibanco.service.ClienteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -86,11 +87,12 @@ class ClienteControllerTest {
     @DisplayName("GET /api/clientes/{id} inexistente devolve 400 (BusinessException)")
     void buscarInexistenteRetorna400() throws Exception {
         when(clienteService.buscarPorId(99L))
-            .thenThrow(new BusinessException("cliente não encontrado: 99"));
+            .thenThrow(new NotFoundException("cliente não encontrado: 99"));
 
         mockMvc.perform(get("/api/clientes/99"))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.mensagem").value("cliente não encontrado: 99"));
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.mensagem").value("cliente não encontrado: 99"))
+            .andExpect(jsonPath("$.erro").value("recurso não encontrado"));
     }
 
     @Test
