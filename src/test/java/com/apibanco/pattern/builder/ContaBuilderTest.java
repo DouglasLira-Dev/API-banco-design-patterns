@@ -107,6 +107,18 @@ class ContaBuilderTest {
     }
 
     @Test
+    @DisplayName("Falha quando cliente é explicitamente nulo (comCliente(null))")
+    void falhaComClienteNulo() {
+        assertThatThrownBy(() -> new ContaCorrenteBuilder()
+                .comNumero("0001-12345-6")
+                .comSaldoInicial(BigDecimal.TEN)
+                .comCliente(null)
+                .build())
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("cliente");
+    }
+
+    @Test
     @DisplayName("Falha quando número é nulo")
     void falhaNumeroNulo() {
         assertThatThrownBy(() -> new ContaCorrenteBuilder()
