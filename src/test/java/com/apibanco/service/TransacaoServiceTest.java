@@ -26,6 +26,12 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -136,6 +142,30 @@ class TransacaoServiceTest {
         service.sacar(2L, new BigDecimal("40.00"));
 
         assertThat(conta.getSaldo()).isEqualByComparingTo("60.00");
+    }
+
+    @Test
+    @DisplayName("Saque delega à Strategy correta do tipo da conta")
+    void saqueDelegaParaStrategyCorreta() {
+        // Usa spies para provar a chamada sem perder o comportamento real
+        SaqueCorrenteStrategy strategyReal = spy(new SaqueCorrenteStrategy(new BigDecimal("0.01")));
+        SaquePoupancaStrategy strategyPoupanca = spy(new SaquePoupancaStrategy());
+        RendimentoPoupancaStrategy rendimento = new RendimentoPoupancaStrategy();
+
+        List<OperacaoStrategy> strategies = List.of(strategyReal, strategyPoupanca, rendimento);
+        TransacaoService service = new TransacaoService(transacaoRepository, contaRepository, strategies);
+
+        ContaCorrente conta = contaCorrente("100.00");
+        when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
+        when(contaRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(transacaoRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        service.sacar(1L, new BigDecimal("50.00"));
+
+        // Verifica que a Strategy de conta corrente foi chamada,
+        // e a de poupança NÃO foi
+        verify(strategyReal, times(1)).executar(eq(new BigDecimal("50.00")), same(conta));
+        verify(strategyPoupanca, never()).executar(any(), any());
     }
 
     @Test
