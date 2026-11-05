@@ -87,4 +87,16 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
      * @return lista (possivelmente vazia, nunca {@code null}) de contas do cliente
      */
     List<Conta> findByClienteId(Long clienteId);
+
+    /**
+     * Verifica se já existe uma conta com o número informado.
+     *
+     * <p>Usado pelo {@code ContaService} durante a geração do número
+     * da conta, para garantir unicidade antes do INSERT. A constraint
+     * {@code UNIQUE} no banco continua sendo a última defesa.</p>
+     *
+     * @param numero número a verificar
+     * @return {@code true} se já existir conta com esse número
+     */
+    boolean existsByNumero(String numero);
 }
