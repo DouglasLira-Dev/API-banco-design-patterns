@@ -2,6 +2,7 @@ package com.apibanco.service;
 
 import com.apibanco.dto.TransacaoRequest;
 import com.apibanco.exception.BusinessException;
+import com.apibanco.exception.NotFoundException;
 import com.apibanco.model.Conta;
 import com.apibanco.model.TipoConta;
 import com.apibanco.model.TipoTransacao;
@@ -293,6 +294,6 @@ public class TransacaoService {
             throw new BusinessException("id da conta é obrigatório");
         }
         return contaRepository.findById(contaId)
-            .orElseThrow(() -> new BusinessException("conta não encontrada: " + contaId));
+            .orElseThrow(() -> new NotFoundException("conta não encontrada: " + contaId));
     }
 }
