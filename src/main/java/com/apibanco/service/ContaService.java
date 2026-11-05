@@ -2,6 +2,7 @@ package com.apibanco.service;
 
 import com.apibanco.dto.ContaRequest;
 import com.apibanco.exception.BusinessException;
+import com.apibanco.exception.NotFoundException;
 import com.apibanco.model.Cliente;
 import com.apibanco.model.Conta;
 import com.apibanco.pattern.factory.ContaFactory;
@@ -75,12 +76,12 @@ public class ContaService {
      *
      * @param request dados de entrada; não pode ser nulo
      * @return a conta persistida (com número único)
-     * @throws BusinessException se o cliente não existir
+     * @throws NotFoundException se o cliente não existir
      */
     @Transactional
     public Conta abrir(ContaRequest request) {
         Cliente cliente = clienteRepository.findById(request.clienteId())
-            .orElseThrow(() -> new BusinessException(
+            .orElseThrow(() -> new NotFoundException(
                 "cliente não encontrado: " + request.clienteId()));
 
         String numero = gerarNumeroUnico();
@@ -121,12 +122,12 @@ public class ContaService {
      *
      * @param contaId identificador da conta; não pode ser nulo
      * @return a conta
-     * @throws BusinessException se a conta não existir
+     * @throws NotFoundException se a conta não existir
      */
     @Transactional(readOnly = true)
     public Conta buscarPorId(Long contaId) {
         return contaRepository.findById(contaId)
-            .orElseThrow(() -> new BusinessException("conta não encontrada: " + contaId));
+            .orElseThrow(() -> new NotFoundException("conta não encontrada: " + contaId));
     }
 
     // Geração de número
