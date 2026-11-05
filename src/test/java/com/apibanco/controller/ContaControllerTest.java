@@ -1,7 +1,6 @@
 package com.apibanco.controller;
 
 import com.apibanco.dto.ContaRequest;
-import com.apibanco.exception.BusinessException;
 import com.apibanco.model.Cliente;
 import com.apibanco.model.Conta;
 import com.apibanco.model.ContaCorrente;
@@ -91,13 +90,14 @@ class ContaControllerTest {
     }
 
     @Test
-    @DisplayName("GET /api/contas/{id}/extrato de conta inexistente devolve 400")
-    void extratoContaInexistenteRetorna400() throws Exception {
+    @DisplayName("GET /api/contas/{id}/extrato de conta inexistente devolve 404")
+    void extratoContaInexistenteRetorna404() throws Exception {
         when(contaService.buscarPorId(99L))
-            .thenThrow(new BusinessException("conta não encontrada: 99"));
+            .thenThrow(new com.apibanco.exception.NotFoundException("conta não encontrada: 99"));
 
         mockMvc.perform(get("/api/contas/99/extrato"))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.mensagem").value("conta não encontrada: 99"));
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.mensagem").value("conta não encontrada: 99"))
+            .andExpect(jsonPath("$.erro").value("recurso não encontrado"));
     }
 }
