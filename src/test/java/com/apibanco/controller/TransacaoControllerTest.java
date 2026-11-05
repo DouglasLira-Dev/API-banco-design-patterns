@@ -3,7 +3,6 @@ package com.apibanco.controller;
 import com.apibanco.dto.DepositoRequest;
 import com.apibanco.dto.SaqueRequest;
 import com.apibanco.dto.TransferenciaRequest;
-import com.apibanco.exception.BusinessException;
 import com.apibanco.model.Cliente;
 import com.apibanco.model.Conta;
 import com.apibanco.model.ContaCorrente;
@@ -104,17 +103,18 @@ class TransacaoControllerTest {
     }
 
     @Test
-    @DisplayName("POST /api/transacoes/deposito com conta inexistente devolve 400")
-    void depositarContaInexistenteRetorna400() throws Exception {
+    @DisplayName("POST /api/transacoes/deposito com conta inexistente devolve 404")
+    void depositarContaInexistenteRetorna404() throws Exception {
         when(transacaoService.depositar(any(), any()))
-            .thenThrow(new BusinessException("conta não encontrada: 99"));
+            .thenThrow(new com.apibanco.exception.NotFoundException("conta não encontrada: 99"));
 
         DepositoRequest req = new DepositoRequest(99L, new BigDecimal("50.00"));
 
         mockMvc.perform(post("/api/transacoes/deposito")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.mensagem").value("conta não encontrada: 99"));
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.mensagem").value("conta não encontrada: 99"))
+            .andExpect(jsonPath("$.erro").value("recurso não encontrado"));
     }
 }
