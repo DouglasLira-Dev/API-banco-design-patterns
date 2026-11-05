@@ -158,9 +158,10 @@ public abstract class Conta {
      * @param cliente dono da conta; não pode ser {@code null}
      */
     protected Conta(Cliente cliente) {
-        Objects.requireNonNull(cliente, "cliente não pode ser nulo");
-        this.cliente = cliente;
-        this.saldo = BigDecimal.ZERO;
+        Objects.requireNonNull(cliente, "cliente não pode ser nulo"); // validação de negócio
+        this.cliente = cliente; // lado dono da FK
+        this.saldo = BigDecimal.ZERO; // saldo inicial
+        this.tipo = tipoEsperado(); // garante coerência com a subclasse
     }
 
     /**
